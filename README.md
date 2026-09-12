@@ -2,7 +2,7 @@
 
 比赛项目仓库。本仓库已接入 GitHub，用于代码迭代与版本记录。
 
-- 远程仓库：https://github.com/zzjj-zzjj/bisai
+- 远程仓库：https://github.com/zzjj-zzjj/bisai （公开）
 - 默认分支：`main`
 
 ## 快速开始

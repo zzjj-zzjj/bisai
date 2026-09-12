@@ -86,11 +86,30 @@ git restore <file>             # 丢弃某文件的未提交改动
 git revert <commit>            # 安全回滚某次提交（生成反向提交）
 ```
 
-## 6. 本仓库的 Git 配置说明
+## 6. 本机 Git 配置说明
 
-本机全局配置了一个指向 `http://127.0.0.1:7890` 的代理，但该代理不常驻。
-本仓库已在**仓库级**配置 `http.proxy=direct://` 直连 GitHub，不受全局配置影响。
+本机已做如下**全局**配置（`.gitconfig`），本仓库不再做任何仓库级覆盖：
 
-- 仓库级配置只影响本仓库，不动全局设置。
-- 如需恢复走代理：`git config --local https.proxy http://127.0.0.1:7890`
-- 查看当前生效配置：`git config --list --show-origin`
+| 配置项 | 值 | 原因 |
+| --- | --- | --- |
+| `user.name` | `zzjj-zzjj` | 原先为空，不配置会导致 `git commit` 直接失败 |
+| `user.email` | `zzjj-zzjj@users.noreply.github.com` | 用 GitHub noreply 地址，避免暴露真实邮箱 |
+| `https.proxy` | **已删除** | 原先指向未运行的 `127.0.0.1:7890`，导致 git 静默失败 |
+
+关于代理：直连 GitHub 正常，因此全局代理已移除。若日后需要走 Clash，
+**不要**设全局代理（Clash 不常驻会让所有仓库静默失败），改为只对需要的仓库设置：
+
+```powershell
+git config --local https.proxy http://127.0.0.1:7890   # 仅该仓库生效
+git config --local --unset https.proxy                  # 撤销
+```
+
+查看当前生效配置及来源：
+
+```powershell
+git config --list --show-origin
+```
+
+排查网络问题的技巧：加 `GIT_CURL_VERBOSE=1` 看真实 HTTP 状态码。
+代理不通时的典型症状是 `git ls-remote` **退出码 0 但没有任何输出**，
+极易被误判为"仓库是空的"。
